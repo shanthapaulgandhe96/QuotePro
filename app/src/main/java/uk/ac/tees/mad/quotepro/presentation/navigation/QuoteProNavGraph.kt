@@ -10,9 +10,9 @@ import uk.ac.tees.mad.quotepro.presentation.screens.auth.forget.ForgetScreen
 import uk.ac.tees.mad.quotepro.presentation.screens.auth.signIn.SignInScreen
 import uk.ac.tees.mad.quotepro.presentation.screens.auth.signUp.SignUpScreen
 import uk.ac.tees.mad.quotepro.presentation.screens.main.reminder.ReminderScreen
-import uk.ac.tees.mad.quotepro.presentation.screens.main.saveQuotes.SavedQuotes
 import uk.ac.tees.mad.quotepro.presentation.screens.main.saveQuotes.SavedQuotesScreen
 import uk.ac.tees.mad.quotepro.presentation.screens.main.settings.SettingsScreen
+import uk.ac.tees.mad.quotepro.presentation.screens.newQuote.NewQuoteScreen
 import uk.ac.tees.mad.quotepro.presentation.screens.splash.SplashScreen
 
 @Composable
@@ -24,7 +24,7 @@ fun QuoteProNavGraph(modifier: Modifier = Modifier) {
         startDestination = ""
     ) {
 
-        composable<SplashRoute>{
+        composable<SplashRoute> {
             SplashScreen(navController)
         }
 
@@ -40,22 +40,20 @@ fun QuoteProNavGraph(modifier: Modifier = Modifier) {
             ForgetScreen(navController)
         }
 
-        navigation<MainRoute>(startDestination = SavedQuotesRoute){
+        navigation<MainRoute>(startDestination = SavedQuotesRoute) {
             composable<SavedQuotesRoute> {
                 SavedQuotesScreen(navController)
             }
             composable<ReminderRoute> {
                 ReminderScreen(navController)
             }
-            composable <SettingsRoute>{
+            composable<SettingsRoute> {
                 SettingsScreen(navController)
             }
         }
-
         composable<NewQuoteRoute> {
-            NewQuoteRoute
+            NewQuoteScreen(navController)
         }
-
     }
 
 }

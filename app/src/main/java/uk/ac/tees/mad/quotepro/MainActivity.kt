@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
+import uk.ac.tees.mad.quotepro.presentation.navigation.QuoteProNavGraph
 import uk.ac.tees.mad.quotepro.ui.theme.QuoteProTheme
 
 @AndroidEntryPoint
@@ -22,7 +23,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             QuoteProTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-
+                    QuoteProNavGraph()
                 }
             }
         }

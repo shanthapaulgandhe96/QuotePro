@@ -18,10 +18,11 @@ class FirebaseAuthRepoImpl @Inject constructor(
         email: String,
         password: String,
     ): Result<Unit> {
+
         return try {
             val authResult = authSource.signUp(email = email, password = password)
             val firebaseUser = authResult.getOrNull()
-                ?: return Result.failure(Exception("User not created"))
+                ?: return Result.failure(Exception("User already account created"))
 
             val userModel = UserModel(
                 uid = firebaseUser.uid,
@@ -54,7 +55,7 @@ class FirebaseAuthRepoImpl @Inject constructor(
     }
 
     override fun getCurrentUser(): FirebaseUser? {
-       return authSource.getCurrentUser()
+        return authSource.getCurrentUser()
     }
 
     override suspend fun getUserProfile(uid: String): Result<UserModel> {

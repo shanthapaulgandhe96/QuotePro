@@ -2,6 +2,7 @@ package uk.ac.tees.mad.quotepro.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -21,7 +22,7 @@ fun QuoteProNavGraph(modifier: Modifier = Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = ""
+        startDestination = SignUpRote
     ) {
 
         composable<SplashRoute> {
@@ -29,15 +30,15 @@ fun QuoteProNavGraph(modifier: Modifier = Modifier) {
         }
 
         composable<SignInRoute> {
-            SignInScreen(navController)
+            SignInScreen(navController, hiltViewModel())
         }
 
         composable<SignUpRote> {
-            SignUpScreen(navController)
+            SignUpScreen(navController, hiltViewModel())
         }
 
         composable<ForgetRoute> {
-            ForgetScreen(navController)
+            ForgetScreen(navController, hiltViewModel())
         }
 
         navigation<MainRoute>(startDestination = SavedQuotesRoute) {

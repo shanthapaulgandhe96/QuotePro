@@ -2,6 +2,9 @@ package uk.ac.tees.mad.quotepro.data.remote.firebase
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -45,5 +48,14 @@ class FirebaseAuthSource @Inject constructor(
     }
 
     fun getCurrentUser(): FirebaseUser? = firebaseAuth.currentUser
+
+
+    fun checkAuthStatus(): Flow<Boolean> = callbackFlow {
+        val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+            trySend(firebaseAuth.currentUser != null).isSuccess
+        }
+        firebaseAuth.addAuthStateListener(authStateListener)
+        awaitClose { firebaseAuth.removeAuthStateListener(authStateListener) }
+    }
 
 }

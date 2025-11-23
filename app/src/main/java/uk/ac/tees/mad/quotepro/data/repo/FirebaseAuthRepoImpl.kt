@@ -1,6 +1,7 @@
 package uk.ac.tees.mad.quotepro.data.repo
 
 import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.flow.Flow
 import uk.ac.tees.mad.quotepro.data.remote.firebase.FirebaseAuthSource
 import uk.ac.tees.mad.quotepro.data.remote.firebase.FirebaseUserSource
 import uk.ac.tees.mad.quotepro.domain.model.UserModel
@@ -61,5 +62,10 @@ class FirebaseAuthRepoImpl @Inject constructor(
     override suspend fun getUserProfile(uid: String): Result<UserModel> {
         return userSource.getUser(uid)
     }
+
+    override fun checkAuthStatus(): Flow<Boolean> {
+        return authSource.checkAuthStatus()
+    }
+
 
 }

@@ -22,11 +22,11 @@ fun QuoteProNavGraph(modifier: Modifier = Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = SignUpRote
+        startDestination = SplashRoute
     ) {
 
         composable<SplashRoute> {
-            SplashScreen(navController)
+            SplashScreen(navController, hiltViewModel())
         }
 
         composable<SignInRoute> {

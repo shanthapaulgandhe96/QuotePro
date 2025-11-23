@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uk.ac.tees.mad.quotepro.domain.common.UiState
 import uk.ac.tees.mad.quotepro.domain.usecase.auth.ResetPasswordUseCase
-import uk.ac.tees.mad.quotepro.presentation.screens.auth.signUp.SignUpNavAction
 import javax.inject.Inject
 
 @HiltViewModel

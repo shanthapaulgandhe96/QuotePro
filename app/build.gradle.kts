@@ -86,6 +86,8 @@ dependencies {
     //For Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
-    //For Icons
+    //For Ico
     implementation("androidx.compose.material:material-icons-extended-android:1.7.8")
+
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 }

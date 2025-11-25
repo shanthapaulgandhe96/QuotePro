@@ -90,4 +90,9 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended-android:1.7.8")
 
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+
+    //For RoomDatabase
+    implementation("androidx.room:room-runtime:2.8.3")
+    ksp("androidx.room:room-compiler:2.8.3")
+    implementation("androidx.room:room-ktx:2.8.3")
 }

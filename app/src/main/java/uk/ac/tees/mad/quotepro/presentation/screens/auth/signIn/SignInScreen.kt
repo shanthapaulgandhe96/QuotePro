@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -89,113 +91,129 @@ fun SignInContent(viewModel: SignInViewModel, uiState: UiState) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "SignIn",
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.SemiBold
-        )
-        Spacer(modifier = Modifier.height(24.dp))
 
+        Text(
+            text = "Welcome Back 👋",
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Text(
+            text = "Sign in to continue",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Email Field
         OutlinedTextField(
             value = signInState.email,
-            onValueChange = {
-                viewModel.onEvent(SignInEvent.EmailChanged(it))
-            },
+            onValueChange = { viewModel.onEvent(SignInEvent.EmailChanged(it)) },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = {
-                Text(text = "Enter your email")
-            },
-            label = {
-                Text(
-                    text = "Email"
+            label = { Text("Email") },
+            placeholder = { Text("example@mail.com") },
+            singleLine = true,
+            shape = MaterialTheme.shapes.medium,
+            leadingIcon = {
+                androidx.compose.material3.Icon(
+                    imageVector = androidx.compose.material.icons.Icons.Default.Email,
+                    contentDescription = "Email Icon"
                 )
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next
             )
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
+        // Password Field
         OutlinedTextField(
             value = signInState.password,
-            onValueChange = {
-                viewModel.onEvent(SignInEvent.PasswordChanged(it))
-            },
+            onValueChange = { viewModel.onEvent(SignInEvent.PasswordChanged(it)) },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(text = "Enter your password") },
-            label = {
-                Text(text = "Password")
+            label = { Text("Password") },
+            placeholder = { Text("••••••••") },
+            singleLine = true,
+            shape = MaterialTheme.shapes.medium,
+            leadingIcon = {
+                androidx.compose.material3.Icon(
+                    imageVector = androidx.compose.material.icons.Icons.Default.Lock,
+                    contentDescription = "Password Icon"
+                )
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                }
+                onDone = { focusManager.clearFocus() }
             )
         )
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.CenterEnd
+
+        TextButton(
+            onClick = { viewModel.onEvent(SignInEvent.OnForgetPassword) },
+            modifier = Modifier.align(Alignment.End)
         ) {
-            TextButton(
-                onClick = {
-                    viewModel.onEvent(SignInEvent.OnForgetPassword)
-                }
-            ) {
-                Text("Forget Password?")
-            }
+            Text(
+                "Forgot Password?",
+                color = MaterialTheme.colorScheme.primary
+            )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = {
-                viewModel.onEvent(SignInEvent.OnSignIn)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            shape = MaterialTheme.shapes.small,
-            elevation = ButtonDefaults.buttonElevation(
-                defaultElevation = 4.dp
-            )
+            onClick = { viewModel.onEvent(SignInEvent.OnSignIn) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            shape = MaterialTheme.shapes.medium,
         ) {
             AnimatedContent(
                 targetState = uiState is UiState.Loading
             ) { isLoading ->
                 if (isLoading) {
                     CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(22.dp),
                         color = MaterialTheme.colorScheme.onPrimary,
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text(
-                        text = "SignIn"
-                    )
+                    Text("Sign In")
                 }
             }
         }
-        Spacer(modifier = Modifier.height(64.dp))
+
+        Spacer(modifier = Modifier.height(40.dp))
+
+        Text(
+            text = "Don’t have an account?",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedButton(
-            onClick = {
-                viewModel.onEvent(SignInEvent.OnSignUp)
-
-            },
-            modifier = Modifier.fillMaxWidth(),
-            shape = MaterialTheme.shapes.small,
+            onClick = { viewModel.onEvent(SignInEvent.OnSignUp) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            shape = MaterialTheme.shapes.medium,
         ) {
-            Text(
-                text = "SignUp"
-            )
+            Text("Create Account")
         }
     }
 }
-
 

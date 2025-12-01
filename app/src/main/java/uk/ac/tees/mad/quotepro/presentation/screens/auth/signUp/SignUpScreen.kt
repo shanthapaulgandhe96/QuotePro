@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -89,107 +92,116 @@ fun SignUpContent(viewModel: SignUpViewModel) {
     val focusManager = LocalFocusManager.current
     val signUpState by viewModel.signUpState.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "SignUp Account",
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.SemiBold
-        )
 
         Text(
-            text = "Get started with your free account",
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = .6f)
+            text = "Create Account ✨",
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            color = MaterialTheme.colorScheme.primary
         )
-        Spacer(modifier = Modifier.height(24.dp))
 
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Text(
+            text = "Sign up to continue",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Name
         OutlinedTextField(
             value = signUpState.name,
-            onValueChange = {
-                viewModel.onEvent(SignUpUiEvent.NameChanged(it))
-            },
+            onValueChange = { viewModel.onEvent(SignUpUiEvent.NameChanged(it)) },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = {
-                Text(text = "Enter your name")
-            },
-            label = {
-                Text(
-                    text = "Name"
+            label = { Text("Full Name") },
+            placeholder = { Text("John Doe") },
+            singleLine = true,
+            shape = MaterialTheme.shapes.medium,
+            leadingIcon = {
+                androidx.compose.material3.Icon(
+                    imageVector = androidx.compose.material.icons.Icons.Default.Person,
+                    contentDescription = "Name Icon"
                 )
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
             )
         )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Email
         OutlinedTextField(
             value = signUpState.email,
-            onValueChange = {
-                viewModel.onEvent(SignUpUiEvent.EmailChanged(it))
-
-            },
+            onValueChange = { viewModel.onEvent(SignUpUiEvent.EmailChanged(it)) },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = {
-                Text(text = "Enter your email")
-            },
-            label = {
-                Text(
-                    text = "Email"
+            label = { Text("Email") },
+            placeholder = { Text("example@mail.com") },
+            singleLine = true,
+            shape = MaterialTheme.shapes.medium,
+            leadingIcon = {
+                androidx.compose.material3.Icon(
+                    imageVector = androidx.compose.material.icons.Icons.Default.Email,
+                    contentDescription = "Email Icon"
                 )
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next
             )
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
+        // Password
         OutlinedTextField(
             value = signUpState.password,
-            onValueChange = {
-                viewModel.onEvent(SignUpUiEvent.PasswordChanged(it))
-
-            },
+            onValueChange = { viewModel.onEvent(SignUpUiEvent.PasswordChanged(it)) },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(text = "Enter your password") },
-            label = {
-                Text(text = "Password")
+            label = { Text("Password") },
+            placeholder = { Text("••••••••") },
+            singleLine = true,
+            shape = MaterialTheme.shapes.medium,
+            leadingIcon = {
+                androidx.compose.material3.Icon(
+                    imageVector = androidx.compose.material.icons.Icons.Default.Lock,
+                    contentDescription = "Password Icon"
+                )
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                }
+                onDone = { focusManager.clearFocus() }
             )
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(28.dp))
 
         Button(
-            onClick = {
-                viewModel.onEvent(SignUpUiEvent.OnSignUp)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            shape = MaterialTheme.shapes.small,
-            elevation = ButtonDefaults.buttonElevation(
-                defaultElevation = 4.dp
-            ),
-            enabled = !(signUpState.email.isBlank() && signUpState.name.isBlank() && signUpState.password.isBlank())
+            onClick = { viewModel.onEvent(SignUpUiEvent.OnSignUp) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            shape = MaterialTheme.shapes.medium,
+            enabled = signUpState.name.isNotBlank()
+                    && signUpState.email.isNotBlank()
+                    && signUpState.password.isNotBlank()
         ) {
-            AnimatedContent(
-                targetState = uiState is UiState.Loading
-            ) { isLoading ->
+            AnimatedContent(targetState = uiState is UiState.Loading) { isLoading ->
                 if (isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
@@ -197,12 +209,11 @@ fun SignUpContent(viewModel: SignUpViewModel) {
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text(
-                        text = "SignUp"
-                    )
+                    Text("Sign Up")
                 }
             }
         }
+
         Spacer(modifier = Modifier.height(32.dp))
 
         Row(
@@ -211,12 +222,14 @@ fun SignUpContent(viewModel: SignUpViewModel) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Already have an account?"
+                text = "Already have an account?",
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            TextButton(onClick = {
-                viewModel.onEvent(SignUpUiEvent.OnSignIn)
-            }) {
-                Text("SignIn")
+            TextButton(onClick = { viewModel.onEvent(SignUpUiEvent.OnSignIn) }) {
+                Text(
+                    text = "Sign In",
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }

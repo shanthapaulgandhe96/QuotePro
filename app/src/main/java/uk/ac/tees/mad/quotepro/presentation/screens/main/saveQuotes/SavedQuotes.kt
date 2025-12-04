@@ -29,54 +29,73 @@ fun SavedQuotesScreen(
     val quotes by viewModel.quotes.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .systemBarsPadding()
-    ) {
-
-        Text(
-            text = "Saved Quotes",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = {
-                searchQuery = it
-                viewModel.onSearch(it)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Search by client name") },
-            leadingIcon = {
-                Icon(Icons.Default.Search, contentDescription = null)
-            }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (quotes.isEmpty()) {
-            EmptyQuoteState()
-        } else {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate(NewQuoteRoute)  // Navigate to New Quote screen
+                },
+                containerColor = MaterialTheme.colorScheme.primary
             ) {
-                items(quotes) { quote ->
-                    QuoteItemCard(
-                        quote = quote,
-                        onClick = {
-                            //navController.navigate(NewQuoteRoute(quote.id))
-                        }
-                    )
+                Icon(
+                    imageVector = Icons.Default.Description,
+                    contentDescription = "Add Quote",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        }
+    ) { paddingValues ->
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp)
+        ) {
+
+            Text(
+                text = "Saved Quotes",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = {
+                    searchQuery = it
+                    viewModel.onSearch(it)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Search by client name") },
+                leadingIcon = {
+                    Icon(Icons.Default.Search, contentDescription = null)
+                }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (quotes.isEmpty()) {
+                EmptyQuoteState()
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(quotes) { quote ->
+                        QuoteItemCard(
+                            quote = quote,
+                            onClick = {
+                                navController.navigate(NewQuoteRoute) // future: pass ID for edit
+                            }
+                        )
+                    }
                 }
             }
         }
     }
 }
+
 
 @Composable
 private fun EmptyQuoteState() {

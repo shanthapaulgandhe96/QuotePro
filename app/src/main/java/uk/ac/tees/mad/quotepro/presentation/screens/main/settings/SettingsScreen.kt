@@ -58,12 +58,12 @@ fun SettingsContent(modifier: Modifier = Modifier) {
                 contentScale = ContentScale.Crop
             )
             Text(
-                text = "Dipu",
+                text = "XYZ",
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Dipu",
+                text = "XYZ",
                 style = MaterialTheme.typography.labelLarge,
             )
 

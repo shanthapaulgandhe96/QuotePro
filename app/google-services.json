@@ -1,32 +1,13 @@
 {
   "project_info": {
-    "project_number": "460637178875",
-    "project_id": "lendabook-221b6",
-    "storage_bucket": "lendabook-221b6.firebasestorage.app"
+    "project_number": "331693540272",
+    "project_id": "quotepro-cee21",
+    "storage_bucket": "quotepro-cee21.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:460637178875:android:31e9aa306f06c17d45d95e",
-        "android_client_info": {
-          "package_name": "uk.ac.tees.mad.lendabook"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBQZNVKgS70dOKQHbPYJTPh2qFdJx_MbTY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:460637178875:android:3d23aefeb6e3471145d95e",
+        "mobilesdk_app_id": "1:331693540272:android:beddf2c81fd6269862cc75",
         "android_client_info": {
           "package_name": "uk.ac.tees.mad.quotepro"
         }
@@ -34,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBQZNVKgS70dOKQHbPYJTPh2qFdJx_MbTY"
+          "current_key": "AIzaSyBd_TCYzR41whaWT4nSSFtdP--f_F1B7Ck"
         }
       ],
       "services": {

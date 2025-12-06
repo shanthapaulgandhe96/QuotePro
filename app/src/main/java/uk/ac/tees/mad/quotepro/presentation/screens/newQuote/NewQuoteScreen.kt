@@ -27,11 +27,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import uk.ac.tees.mad.quotepro.presentation.screens.auth.forget.ForgetViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewQuoteScreen(navController: NavController) {
+fun NewQuoteScreen(navController: NavController,
+                   viewModel: NewQuoteViewModel = hiltViewModel()
+) {
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -49,12 +53,14 @@ fun NewQuoteScreen(navController: NavController) {
             )
         }
     ) { paddingValues ->
-        NewQuoteContent(paddingValues)
+        NewQuoteContent(paddingValues, onAdd = {viewModel.addQuote(
+
+        )})
     }
 }
 
 @Composable
-fun NewQuoteContent(paddingValues: PaddingValues) {
+fun NewQuoteContent(paddingValues: PaddingValues, onAdd:()-> Unit) {
 
     Column(
         modifier = Modifier
@@ -155,7 +161,9 @@ fun NewQuoteContent(paddingValues: PaddingValues) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = {/*TODO*/ },
+            onClick = {
+                onAdd()
+            },
             modifier = Modifier.fillMaxWidth()
         ) { Text(text = "Save Quote") }
 

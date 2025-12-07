@@ -11,7 +11,6 @@ import uk.ac.tees.mad.quotepro.data.local.QuoteProDatabase
 import uk.ac.tees.mad.quotepro.data.local.dao.QuoteDao
 import uk.ac.tees.mad.quotepro.utils.Constants
 import javax.inject.Singleton
-import kotlin.jvm.java
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -27,7 +26,7 @@ object DatabaseModule {
             QuoteProDatabase::class.java,
             Constants.DATABASE_NAME
         )
-            .fallbackToDestructiveMigration(false)
+            .fallbackToDestructiveMigration()
             .build()
     }
 

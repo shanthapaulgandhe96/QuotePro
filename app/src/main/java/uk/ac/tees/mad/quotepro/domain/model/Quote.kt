@@ -36,10 +36,11 @@ data class Service(
     val amount: Double = 0.0,
 )
 
-data class Currency(
-    val base: String = "USD",
-    val date: String = "",
-    val rates: Map<String, Double> = emptyMap()
+data class CurrencyRate(
+    val code: String = "USD",
+    val symbol: String = "$",
+    val name: String = "US Dollar",
+    val rate: Double = 1.0
 )
 
 enum class QuoteStatus {

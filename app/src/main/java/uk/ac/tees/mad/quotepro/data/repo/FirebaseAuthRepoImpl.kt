@@ -29,8 +29,7 @@ class FirebaseAuthRepoImpl @Inject constructor(
                 uid = firebaseUser.uid,
                 name = name,
                 email = email,
-                companyName = "",
-                currency = ""
+                companyName = ""
             )
             userSource.saveUser(userModel)
             Result.success(Unit)

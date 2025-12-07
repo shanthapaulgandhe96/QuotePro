@@ -2,11 +2,14 @@ package uk.ac.tees.mad.quotepro.di
 
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import uk.ac.tees.mad.quotepro.data.repo.CurrencyRepositoryImpl
 import uk.ac.tees.mad.quotepro.data.repo.FirebaseAuthRepoImpl
+import uk.ac.tees.mad.quotepro.data.repo.NewQuoteRepoImpl
+import uk.ac.tees.mad.quotepro.domain.repo.CurrencyRepository
 import uk.ac.tees.mad.quotepro.domain.repo.FirebaseAuthRepo
+import uk.ac.tees.mad.quotepro.domain.repo.NewQuoteRepo
 import javax.inject.Singleton
 
 @Module
@@ -15,6 +18,13 @@ interface RepositoryModule {
 
     @Binds
     @Singleton
-    fun bindAuthRepo(firebaseAuthRepoImpl: FirebaseAuthRepoImpl): FirebaseAuthRepo
+    fun bindAuthRepo(impl: FirebaseAuthRepoImpl): FirebaseAuthRepo
 
+    @Binds
+    @Singleton
+    fun bindNewQuoteRepo(impl: NewQuoteRepoImpl): NewQuoteRepo
+
+    @Binds
+    @Singleton
+    fun bindCurrencyRepo(impl: CurrencyRepositoryImpl): CurrencyRepository
 }

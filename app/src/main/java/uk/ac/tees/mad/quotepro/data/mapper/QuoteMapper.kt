@@ -29,13 +29,11 @@ object QuoteMapper {
             createdAt = quote.createdAt,
             updatedAt = quote.updatedAt,
             dueDate = quote.dueDate,
-            isSynced = false,
-
-            )
+            isSynced = false
+        )
     }
 
-    fun toDomain(entity: QuoteEntity, client: Client): Quote {
-
+    fun toDomain(entity: QuoteEntity): Quote {
         val clientType = object : TypeToken<Client>() {}.type
         val client: Client = gson.fromJson(entity.clientJson, clientType)
 
@@ -51,6 +49,7 @@ object QuoteMapper {
             currency = entity.currency,
             currencySymbol = entity.currencySymbol,
             exchangeRate = entity.exchangeRate,
+            totalAmount = entity.totalAmount,
             logoUri = entity.logoUri,
             signatureUri = entity.signatureUri,
             status = QuoteStatus.valueOf(entity.status),

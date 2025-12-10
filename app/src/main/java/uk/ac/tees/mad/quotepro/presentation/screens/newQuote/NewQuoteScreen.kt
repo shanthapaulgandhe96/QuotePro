@@ -33,8 +33,9 @@ import uk.ac.tees.mad.quotepro.presentation.screens.auth.forget.ForgetViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewQuoteScreen(navController: NavController,
-                   viewModel: NewQuoteViewModel = hiltViewModel()
+fun NewQuoteScreen(
+    navController: NavController,
+    viewModel: NewQuoteViewModel = hiltViewModel()
 ) {
 
     Scaffold(
@@ -53,14 +54,16 @@ fun NewQuoteScreen(navController: NavController,
             )
         }
     ) { paddingValues ->
-        NewQuoteContent(paddingValues, onAdd = {viewModel.addQuote(
+        NewQuoteContent(paddingValues, onAdd = {
+            viewModel.addQuote(
 
-        )})
+            )
+        })
     }
 }
 
 @Composable
-fun NewQuoteContent(paddingValues: PaddingValues, onAdd:()-> Unit) {
+fun NewQuoteContent(paddingValues: PaddingValues, onAdd: () -> Unit) {
 
     Column(
         modifier = Modifier
@@ -172,6 +175,6 @@ fun NewQuoteContent(paddingValues: PaddingValues, onAdd:()-> Unit) {
 
 @Preview
 @Composable
-fun showAdd(){
+fun showAdd() {
     NewQuoteScreen(navController = NavController(LocalContext.current))
 }

@@ -8,7 +8,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewQuoteViewModel @Inject constructor(
-    val useCase: AddQuoteUseCase
 ) : ViewModel(){
 
     fun addQuote(){

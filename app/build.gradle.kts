@@ -102,4 +102,14 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+
+    // WorkManager
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
+
+    // Glide
+    implementation(libs.compose)
+
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.32.0")
 }

@@ -7,15 +7,20 @@ import dagger.hilt.components.SingletonComponent
 import uk.ac.tees.mad.quotepro.domain.repo.CurrencyRepository
 import uk.ac.tees.mad.quotepro.domain.repo.FirebaseAuthRepo
 import uk.ac.tees.mad.quotepro.domain.repo.NewQuoteRepo
+import uk.ac.tees.mad.quotepro.domain.repo.SyncRepository
 import uk.ac.tees.mad.quotepro.domain.usecase.auth.ResetPasswordUseCase
 import uk.ac.tees.mad.quotepro.domain.usecase.auth.SignInUseCase
 import uk.ac.tees.mad.quotepro.domain.usecase.auth.SignUpUseCase
 import uk.ac.tees.mad.quotepro.domain.usecase.currency.ConvertAmountUseCase
 import uk.ac.tees.mad.quotepro.domain.usecase.currency.GetExchangeRatesUseCase
 import uk.ac.tees.mad.quotepro.domain.usecase.quote.DeleteQuoteUseCase
+import uk.ac.tees.mad.quotepro.domain.usecase.quote.FilterQuotesByStatusUseCase
 import uk.ac.tees.mad.quotepro.domain.usecase.quote.GetAllQuotesUseCase
 import uk.ac.tees.mad.quotepro.domain.usecase.quote.GetQuoteByIdUseCase
 import uk.ac.tees.mad.quotepro.domain.usecase.quote.SaveQuoteUseCase
+import uk.ac.tees.mad.quotepro.domain.usecase.quote.SearchQuotesUseCase
+import uk.ac.tees.mad.quotepro.domain.usecase.quote.SyncOfflineQuotesUseCase
+import uk.ac.tees.mad.quotepro.domain.usecase.quote.UpdateQuoteStatusUseCase
 import javax.inject.Singleton
 
 @Module
@@ -66,6 +71,24 @@ object UseCaseModule {
         return DeleteQuoteUseCase(repository)
     }
 
+    @Provides
+    @Singleton
+    fun provideUpdateQuoteStatusUseCase(repository: NewQuoteRepo): UpdateQuoteStatusUseCase {
+        return UpdateQuoteStatusUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchQuotesUseCase(): SearchQuotesUseCase {
+        return SearchQuotesUseCase()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFilterQuotesByStatusUseCase(): FilterQuotesByStatusUseCase {
+        return FilterQuotesByStatusUseCase()
+    }
+
     // Currency Use Cases
     @Provides
     @Singleton
@@ -77,5 +100,12 @@ object UseCaseModule {
     @Singleton
     fun provideConvertAmountUseCase(repository: CurrencyRepository): ConvertAmountUseCase {
         return ConvertAmountUseCase(repository)
+    }
+
+    // Sync Use Cases
+    @Provides
+    @Singleton
+    fun provideSyncOfflineQuotesUseCase(repository: SyncRepository): SyncOfflineQuotesUseCase {
+        return SyncOfflineQuotesUseCase(repository)
     }
 }

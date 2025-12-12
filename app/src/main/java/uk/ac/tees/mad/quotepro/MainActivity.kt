@@ -18,9 +18,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             QuoteProTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) {
                     QuoteProNavGraph()
-                }
             }
         }
     }

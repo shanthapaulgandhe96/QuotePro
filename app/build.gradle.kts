@@ -112,4 +112,6 @@ dependencies {
     implementation(libs.compose)
 
     implementation("com.google.accompanist:accompanist-swiperefresh:0.32.0")
+
+    implementation(libs.cloudinary.android)
 }

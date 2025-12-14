@@ -1,4 +1,4 @@
-package uk.ac.tees.mad.quotepro.presentation.screens.main.reminder
+package uk.ac.tees.mad.quotepro.presentation.screens.reminder
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,7 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import java.time.LocalDate
 
 @Composable
 fun ReminderScreen(

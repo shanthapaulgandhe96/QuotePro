@@ -12,14 +12,19 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import uk.ac.tees.mad.quotepro.presentation.navigation.MainRoute
 import uk.ac.tees.mad.quotepro.presentation.navigation.SignInRoute
 import uk.ac.tees.mad.quotepro.presentation.screens.auth.forget.ForgetNavAction
+import uk.ac.tees.mad.quotepro.presentation.screens.auth.signIn.SignInViewModel
 
 @Composable
-fun SplashScreen(navController: NavController, viewModel: SplashViewModel) {
+fun SplashScreen(
+    navController: NavController,
+    viewModel: SplashViewModel = hiltViewModel(),
+) {
 
     LaunchedEffect(Unit) {
         viewModel.navAction.collect { navAction ->

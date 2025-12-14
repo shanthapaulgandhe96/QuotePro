@@ -1,4 +1,4 @@
-package uk.ac.tees.mad.quotepro.presentation.screens.main.saveQuotes.components
+package uk.ac.tees.mad.quotepro.presentation.screens.saveQuotes.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning

@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import uk.ac.tees.mad.quotepro.domain.common.UiState
 import uk.ac.tees.mad.quotepro.presentation.navigation.ForgetRoute
@@ -44,7 +45,7 @@ import uk.ac.tees.mad.quotepro.utils.showToast
 @Composable
 fun SignInScreen(
     navController: NavController,
-    viewModel: SignInViewModel,
+    viewModel: SignInViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current

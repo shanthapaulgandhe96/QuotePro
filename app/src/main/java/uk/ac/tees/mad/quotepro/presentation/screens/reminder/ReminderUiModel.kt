@@ -1,4 +1,4 @@
-package uk.ac.tees.mad.quotepro.presentation.screens.main.reminder
+package uk.ac.tees.mad.quotepro.presentation.screens.reminder
 
 
 data class ReminderUiModel(

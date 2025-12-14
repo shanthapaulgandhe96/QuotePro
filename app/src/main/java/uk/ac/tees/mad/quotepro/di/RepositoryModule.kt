@@ -4,12 +4,14 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import uk.ac.tees.mad.quotepro.data.repo.CloudinaryStorageRepositoryImpl
 import uk.ac.tees.mad.quotepro.data.repo.CurrencyRepositoryImpl
 import uk.ac.tees.mad.quotepro.data.repo.FirebaseAuthRepoImpl
 import uk.ac.tees.mad.quotepro.data.repo.NewQuoteRepoImpl
 import uk.ac.tees.mad.quotepro.data.repo.SyncRepositoryImpl
 import uk.ac.tees.mad.quotepro.domain.repo.CurrencyRepository
 import uk.ac.tees.mad.quotepro.domain.repo.FirebaseAuthRepo
+import uk.ac.tees.mad.quotepro.domain.repo.ImageStorageRepository
 import uk.ac.tees.mad.quotepro.domain.repo.NewQuoteRepo
 import uk.ac.tees.mad.quotepro.domain.repo.SyncRepository
 import javax.inject.Singleton
@@ -33,4 +35,8 @@ interface RepositoryModule {
     @Binds
     @Singleton
     fun bindSyncRepo(impl: SyncRepositoryImpl): SyncRepository
+
+    @Binds
+    @Singleton
+    fun bindImageStorageRepo(impl: CloudinaryStorageRepositoryImpl): ImageStorageRepository
 }

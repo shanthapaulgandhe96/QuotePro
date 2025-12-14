@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import uk.ac.tees.mad.quotepro.domain.repo.CurrencyRepository
 import uk.ac.tees.mad.quotepro.domain.repo.FirebaseAuthRepo
+import uk.ac.tees.mad.quotepro.domain.repo.ImageStorageRepository
 import uk.ac.tees.mad.quotepro.domain.repo.NewQuoteRepo
 import uk.ac.tees.mad.quotepro.domain.repo.SyncRepository
 import uk.ac.tees.mad.quotepro.domain.usecase.auth.ResetPasswordUseCase
@@ -21,6 +22,8 @@ import uk.ac.tees.mad.quotepro.domain.usecase.quote.SaveQuoteUseCase
 import uk.ac.tees.mad.quotepro.domain.usecase.quote.SearchQuotesUseCase
 import uk.ac.tees.mad.quotepro.domain.usecase.quote.SyncOfflineQuotesUseCase
 import uk.ac.tees.mad.quotepro.domain.usecase.quote.UpdateQuoteStatusUseCase
+import uk.ac.tees.mad.quotepro.domain.usecase.storage.DeleteImageUseCase
+import uk.ac.tees.mad.quotepro.domain.usecase.storage.UploadImageUseCase
 import javax.inject.Singleton
 
 @Module
@@ -107,5 +110,18 @@ object UseCaseModule {
     @Singleton
     fun provideSyncOfflineQuotesUseCase(repository: SyncRepository): SyncOfflineQuotesUseCase {
         return SyncOfflineQuotesUseCase(repository)
+    }
+
+    // Storage Use Cases (NEW)
+    @Provides
+    @Singleton
+    fun provideUploadImageUseCase(repository: ImageStorageRepository): UploadImageUseCase {
+        return UploadImageUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteImageUseCase(repository: ImageStorageRepository): DeleteImageUseCase {
+        return DeleteImageUseCase(repository)
     }
 }

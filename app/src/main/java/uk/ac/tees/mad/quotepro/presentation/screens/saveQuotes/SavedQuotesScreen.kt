@@ -1,13 +1,53 @@
-package uk.ac.tees.mad.quotepro.presentation.screens.main.saveQuotes
+package uk.ac.tees.mad.quotepro.presentation.screens.saveQuotes
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SearchOff
+import androidx.compose.material3.Badge
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,12 +58,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import uk.ac.tees.mad.quotepro.domain.model.Quote
 import uk.ac.tees.mad.quotepro.presentation.navigation.NewQuoteRoute
-import uk.ac.tees.mad.quotepro.presentation.screens.main.saveQuotes.components.DeleteConfirmationDialog
-import uk.ac.tees.mad.quotepro.presentation.screens.main.saveQuotes.components.QuoteFilterSheet
-import uk.ac.tees.mad.quotepro.presentation.screens.main.saveQuotes.components.QuoteStatusChip
+import uk.ac.tees.mad.quotepro.presentation.screens.saveQuotes.components.DeleteConfirmationDialog
+import uk.ac.tees.mad.quotepro.presentation.screens.saveQuotes.components.QuoteFilterSheet
+import uk.ac.tees.mad.quotepro.presentation.screens.saveQuotes.components.QuoteStatusChip
 import uk.ac.tees.mad.quotepro.utils.showToast
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,8 +75,6 @@ fun SavedQuotesScreen(
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
     var searchQuery by remember { mutableStateOf("") }
-
-    // Removed: pullRefreshState
 
     LaunchedEffect(Unit) {
         viewModel.navAction.collect { action ->
@@ -75,7 +114,6 @@ fun SavedQuotesScreen(
                             Icon(Icons.Default.FilterList, contentDescription = "Filter")
                         }
                     }
-                    // Manual refresh button remains accessible here
                     IconButton(onClick = { viewModel.onEvent(SavedQuotesEvent.RefreshQuotes) }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }
@@ -84,12 +122,14 @@ fun SavedQuotesScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate(NewQuoteRoute) },
+                onClick = {
+                    navController.navigate(NewQuoteRoute)
+                },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add Quote",
+                    contentDescription = "New Quote",
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
@@ -99,7 +139,6 @@ fun SavedQuotesScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-            // Removed: .pullRefresh(pullRefreshState)
         ) {
             Column(
                 modifier = Modifier
@@ -175,8 +214,6 @@ fun SavedQuotesScreen(
                     }
                 }
             }
-
-            // Removed: PullRefreshIndicator
         }
 
         // Filter Sheet

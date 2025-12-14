@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import uk.ac.tees.mad.quotepro.domain.common.UiState
 import uk.ac.tees.mad.quotepro.presentation.navigation.SignInRoute
@@ -36,7 +37,10 @@ import uk.ac.tees.mad.quotepro.presentation.screens.auth.signUp.SignUpUiEvent
 import uk.ac.tees.mad.quotepro.utils.showToast
 
 @Composable
-fun ForgetScreen(navController: NavController, viewModel: ForgetViewModel) {
+fun ForgetScreen(
+    navController: NavController,
+    viewModel: ForgetViewModel = hiltViewModel()
+) {
 
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current

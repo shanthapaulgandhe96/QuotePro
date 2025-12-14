@@ -26,7 +26,7 @@ object SavedQuotesRoute
 object ReminderRoute
 
 @Serializable
-object SettingsRoute
+object ProfileRoute
 
 //Other Routes
 

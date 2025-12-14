@@ -1,6 +1,5 @@
-package uk.ac.tees.mad.quotepro.presentation.screens.main.saveQuotes
+package uk.ac.tees.mad.quotepro.presentation.screens.saveQuotes
 
-import uk.ac.tees.mad.quotepro.data.local.entity.QuoteEntity
 import uk.ac.tees.mad.quotepro.domain.model.Quote
 import uk.ac.tees.mad.quotepro.domain.model.QuoteStatus
 

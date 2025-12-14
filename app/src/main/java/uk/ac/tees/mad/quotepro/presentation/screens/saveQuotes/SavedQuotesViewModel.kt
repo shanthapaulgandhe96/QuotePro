@@ -1,4 +1,4 @@
-package uk.ac.tees.mad.quotepro.presentation.screens.main.saveQuotes
+package uk.ac.tees.mad.quotepro.presentation.screens.saveQuotes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

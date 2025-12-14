@@ -1,4 +1,4 @@
-package uk.ac.tees.mad.quotepro.presentation.screens.main.saveQuotes.components
+package uk.ac.tees.mad.quotepro.presentation.screens.saveQuotes.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

@@ -1,6 +1,5 @@
-package uk.ac.tees.mad.quotepro.presentation.screens.main.reminder
+package uk.ac.tees.mad.quotepro.presentation.screens.reminder
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

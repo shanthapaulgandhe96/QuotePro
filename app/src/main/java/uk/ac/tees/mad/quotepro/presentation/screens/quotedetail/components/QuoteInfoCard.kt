@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import uk.ac.tees.mad.quotepro.domain.model.Quote
-import uk.ac.tees.mad.quotepro.presentation.screens.main.saveQuotes.components.QuoteStatusChip
+import uk.ac.tees.mad.quotepro.presentation.screens.saveQuotes.components.QuoteStatusChip
 import java.text.SimpleDateFormat
 import java.util.*
 

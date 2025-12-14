@@ -34,16 +34,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import uk.ac.tees.mad.quotepro.domain.common.UiState
 import uk.ac.tees.mad.quotepro.presentation.navigation.MainRoute
 import uk.ac.tees.mad.quotepro.presentation.navigation.SignInRoute
+import uk.ac.tees.mad.quotepro.presentation.screens.auth.forget.ForgetViewModel
 import uk.ac.tees.mad.quotepro.utils.showToast
 
 @Composable
 fun SignUpScreen(
     navController: NavController,
-    viewModel: SignUpViewModel,
+    viewModel: SignUpViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsState()

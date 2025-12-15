@@ -1,7 +1,11 @@
 package uk.ac.tees.mad.quotepro.presentation.screens.newQuote
 
 import android.Manifest
+import android.content.ContentValues
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -73,50 +77,88 @@ fun NewQuoteScreen(
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
 
-    // Camera and Gallery Launchers
+    // State for camera
     var cameraImageUri by remember { mutableStateOf<Uri?>(null) }
     var currentCameraTarget by remember { mutableStateOf<CameraTarget?>(null) }
 
+    // Camera Launcher
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { success ->
+        Log.d("NewQuoteScreen", "Camera result - Success: $success, URI: $cameraImageUri")
         if (success && cameraImageUri != null) {
             when (currentCameraTarget) {
-                CameraTarget.LOGO -> viewModel.onEvent(
-                    NewQuoteUiEvent.LogoCaptured(cameraImageUri.toString())
-                )
-                CameraTarget.SIGNATURE -> viewModel.onEvent(
-                    NewQuoteUiEvent.SignatureCaptured(cameraImageUri.toString())
-                )
-                null -> {}
+                CameraTarget.LOGO -> {
+                    Log.d("NewQuoteScreen", "Uploading logo: $cameraImageUri")
+                    viewModel.onEvent(
+                        NewQuoteUiEvent.LogoCaptured(cameraImageUri.toString())
+                    )
+                }
+                CameraTarget.SIGNATURE -> {
+                    Log.d("NewQuoteScreen", "Uploading signature: $cameraImageUri")
+                    viewModel.onEvent(
+                        NewQuoteUiEvent.SignatureCaptured(cameraImageUri.toString())
+                    )
+                }
+                null -> {
+                    Log.e("NewQuoteScreen", "Camera target is null")
+                }
             }
+        } else {
+            Log.e("NewQuoteScreen", "Camera capture failed or URI is null")
+            context.showToast("Failed to capture image")
         }
     }
 
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri ->
-        uri?.let {
-            when (currentCameraTarget) {
-                CameraTarget.LOGO -> viewModel.onEvent(
-                    NewQuoteUiEvent.LogoCaptured(it.toString())
-                )
-                CameraTarget.SIGNATURE -> viewModel.onEvent(
-                    NewQuoteUiEvent.SignatureCaptured(it.toString())
-                )
-                null -> {}
-            }
-        }
-    }
-
+    // Camera Permission Launcher
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { granted ->
+        Log.d("NewQuoteScreen", "Camera permission granted: $granted")
         if (granted) {
-            cameraImageUri = createImageUri(context)
-            cameraLauncher.launch(cameraImageUri!!)
+            try {
+                // Create URI for image
+                val uri = createImageUri(context)
+                if (uri != null) {
+                    cameraImageUri = uri
+                    cameraLauncher.launch(uri)
+                } else {
+                    context.showToast("Failed to create image file")
+                }
+            } catch (e: Exception) {
+                Log.e("NewQuoteScreen", "Error creating camera URI", e)
+                context.showToast("Error: ${e.message}")
+            }
         } else {
-            context.showToast("Camera permission denied")
+            context.showToast("Camera permission is required to take photos")
+        }
+    }
+
+    // Gallery Launcher
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        Log.d("NewQuoteScreen", "Gallery result - URI: $uri")
+        uri?.let {
+            when (currentCameraTarget) {
+                CameraTarget.LOGO -> {
+                    Log.d("NewQuoteScreen", "Uploading logo from gallery: $it")
+                    viewModel.onEvent(
+                        NewQuoteUiEvent.LogoCaptured(it.toString())
+                    )
+                }
+                CameraTarget.SIGNATURE -> {
+                    Log.d("NewQuoteScreen", "Uploading signature from gallery: $it")
+                    viewModel.onEvent(
+                        NewQuoteUiEvent.SignatureCaptured(it.toString())
+                    )
+                }
+                null -> {
+                    Log.e("NewQuoteScreen", "Camera target is null")
+                }
+            }
+        } ?: run {
+            Log.e("NewQuoteScreen", "Gallery selection returned null")
         }
     }
 
@@ -124,9 +166,18 @@ fun NewQuoteScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is NewQuoteUiEffect.ShowToast -> context.showToast(effect.message)
-                is NewQuoteUiEffect.ShowError -> context.showToast(effect.error)
-                is NewQuoteUiEffect.NavigateBack -> navController.popBackStack()
+                is NewQuoteUiEffect.ShowToast -> {
+                    Log.d("NewQuoteScreen", "Toast: ${effect.message}")
+                    context.showToast(effect.message)
+                }
+                is NewQuoteUiEffect.ShowError -> {
+                    Log.e("NewQuoteScreen", "Error: ${effect.error}")
+                    context.showToast(effect.error)
+                }
+                is NewQuoteUiEffect.NavigateBack -> {
+                    Log.d("NewQuoteScreen", "Navigating back")
+                    navController.popBackStack()
+                }
             }
         }
     }
@@ -255,9 +306,11 @@ fun NewQuoteScreen(
         if (state.showCameraOptions) {
             CameraOptionsBottomSheet(
                 onCameraClick = {
+                    Log.d("NewQuoteScreen", "Camera option clicked")
                     cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                 },
                 onGalleryClick = {
+                    Log.d("NewQuoteScreen", "Gallery option clicked")
                     galleryLauncher.launch("image/*")
                 },
                 onDismiss = { viewModel.onEvent(NewQuoteUiEvent.DismissDialog) }
@@ -483,14 +536,26 @@ private fun AttachmentsSection(
 }
 
 // Helper function to create image URI
-private fun createImageUri(context: android.content.Context): Uri {
-    val imageFile = java.io.File(
-        context.cacheDir,
-        "quote_image_${System.currentTimeMillis()}.jpg"
-    )
-    return androidx.core.content.FileProvider.getUriForFile(
-        context,
-        "${context.packageName}.fileprovider",
-        imageFile
-    )
+private fun createImageUri(context: android.content.Context): Uri? {
+    return try {
+        val timestamp = System.currentTimeMillis()
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, "quote_image_$timestamp.jpg")
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/QuotePro")
+            }
+        }
+
+        val uri = context.contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
+        )
+
+        Log.d("NewQuoteScreen", "Created image URI: $uri")
+        uri
+    } catch (e: Exception) {
+        Log.e("NewQuoteScreen", "Error creating image URI", e)
+        null
+    }
 }

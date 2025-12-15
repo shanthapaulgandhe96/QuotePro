@@ -57,7 +57,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import uk.ac.tees.mad.quotepro.domain.model.Quote
+import uk.ac.tees.mad.quotepro.presentation.navigation.EditQuoteRoute
 import uk.ac.tees.mad.quotepro.presentation.navigation.NewQuoteRoute
+import uk.ac.tees.mad.quotepro.presentation.navigation.QuoteDetailRoute
 import uk.ac.tees.mad.quotepro.presentation.screens.saveQuotes.components.DeleteConfirmationDialog
 import uk.ac.tees.mad.quotepro.presentation.screens.saveQuotes.components.QuoteFilterSheet
 import uk.ac.tees.mad.quotepro.presentation.screens.saveQuotes.components.QuoteStatusChip
@@ -80,10 +82,10 @@ fun SavedQuotesScreen(
         viewModel.navAction.collect { action ->
             when (action) {
                 is SavedQuotesNavAction.NavigateToQuoteDetail -> {
-                    navController.navigate("quoteDetail/${action.quoteId}")
+                    navController.navigate(QuoteDetailRoute(action.quoteId))
                 }
                 is SavedQuotesNavAction.NavigateToEditQuote -> {
-                    navController.navigate("newQuote/${action.quoteId}")
+                    navController.navigate(EditQuoteRoute(action.quoteId))
                 }
             }
         }
@@ -196,7 +198,10 @@ fun SavedQuotesScreen(
                         LazyColumn(
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            items(state.filteredQuotes) { quote ->
+                            items(
+                                items = state.filteredQuotes,
+                                key = { quote -> quote.id }
+                            ) { quote ->
                                 QuoteItemCard(
                                     quote = quote,
                                     onClick = {

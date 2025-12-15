@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import uk.ac.tees.mad.quotepro.presentation.navigation.EditQuoteRoute
 import uk.ac.tees.mad.quotepro.presentation.screens.quotedetail.components.QuoteActionsBar
 import uk.ac.tees.mad.quotepro.presentation.screens.quotedetail.components.QuoteInfoCard
 import uk.ac.tees.mad.quotepro.utils.showToast
@@ -38,7 +39,7 @@ fun QuoteDetailScreen(
                     navController.popBackStack()
                 }
                 is QuoteDetailNavAction.NavigateToEdit -> {
-                    navController.navigate("newQuote/${action.quoteId}")
+                    navController.navigate(EditQuoteRoute(quoteId = action.quoteId))
                 }
             }
         }

@@ -6,8 +6,8 @@ object Constants {
     const val REMINDERS_COLLECTION = "reminders"
 
     // Database
-    const val DATABASE_NAME = "quotepro_database"
-    const val DATABASE_VERSION = 1
+    const val DATABASE_VERSION = 2
+    const val DATABASE_NAME = "quotepro_db"
 
     // DataStore
     const val DATASTORE_NAME = "quotepro_preferences"

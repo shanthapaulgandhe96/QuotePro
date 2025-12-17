@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import uk.ac.tees.mad.quotepro.data.local.QuoteProDatabase
 import uk.ac.tees.mad.quotepro.data.local.dao.QuoteDao
+import uk.ac.tees.mad.quotepro.data.local.dao.ReminderDao
 import uk.ac.tees.mad.quotepro.utils.Constants
 import javax.inject.Singleton
 
@@ -34,5 +35,11 @@ object DatabaseModule {
     @Singleton
     fun provideQuoteDao(database: QuoteProDatabase): QuoteDao {
         return database.quoteDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideReminderDao(database: QuoteProDatabase): ReminderDao {
+        return database.reminderDao()
     }
 }

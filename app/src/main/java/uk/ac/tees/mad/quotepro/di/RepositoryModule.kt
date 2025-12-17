@@ -8,11 +8,13 @@ import uk.ac.tees.mad.quotepro.data.repo.CloudinaryStorageRepositoryImpl
 import uk.ac.tees.mad.quotepro.data.repo.CurrencyRepositoryImpl
 import uk.ac.tees.mad.quotepro.data.repo.FirebaseAuthRepoImpl
 import uk.ac.tees.mad.quotepro.data.repo.NewQuoteRepoImpl
+import uk.ac.tees.mad.quotepro.data.repo.ReminderRepositoryImpl
 import uk.ac.tees.mad.quotepro.data.repo.SyncRepositoryImpl
 import uk.ac.tees.mad.quotepro.domain.repo.CurrencyRepository
 import uk.ac.tees.mad.quotepro.domain.repo.FirebaseAuthRepo
 import uk.ac.tees.mad.quotepro.domain.repo.ImageStorageRepository
 import uk.ac.tees.mad.quotepro.domain.repo.NewQuoteRepo
+import uk.ac.tees.mad.quotepro.domain.repo.ReminderRepository
 import uk.ac.tees.mad.quotepro.domain.repo.SyncRepository
 import javax.inject.Singleton
 
@@ -39,4 +41,8 @@ interface RepositoryModule {
     @Binds
     @Singleton
     fun bindImageStorageRepo(impl: CloudinaryStorageRepositoryImpl): ImageStorageRepository
+
+    @Binds
+    @Singleton
+    fun bindReminderRepository(impl: ReminderRepositoryImpl): ReminderRepository
 }

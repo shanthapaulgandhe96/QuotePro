@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.work.*
 import uk.ac.tees.mad.quotepro.data.workers.QuoteSyncWorker
 import java.util.concurrent.TimeUnit
+import uk.ac.tees.mad.quotepro.workers.ReminderSyncWorker
 
 object WorkManagerInitializer {
 
@@ -27,6 +28,18 @@ object WorkManagerInitializer {
             QuoteSyncWorker.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
             syncWorkRequest
+        )
+
+        val reminderSyncRequest = PeriodicWorkRequestBuilder<ReminderSyncWorker>(
+            15, TimeUnit.MINUTES
+        )
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+            ReminderSyncWorker.WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            reminderSyncRequest
         )
     }
 

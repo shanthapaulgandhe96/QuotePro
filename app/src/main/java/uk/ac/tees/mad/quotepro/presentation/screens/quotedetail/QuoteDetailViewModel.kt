@@ -8,16 +8,21 @@ import kotlinx.coroutines.launch
 import uk.ac.tees.mad.quotepro.data.mapper.QuoteMapper
 import uk.ac.tees.mad.quotepro.domain.model.Quote
 import uk.ac.tees.mad.quotepro.domain.model.QuoteStatus
+import uk.ac.tees.mad.quotepro.domain.model.ReminderType
 import uk.ac.tees.mad.quotepro.domain.usecase.quote.DeleteQuoteUseCase
 import uk.ac.tees.mad.quotepro.domain.usecase.quote.GetQuoteByIdUseCase
 import uk.ac.tees.mad.quotepro.domain.usecase.quote.UpdateQuoteStatusUseCase
+import uk.ac.tees.mad.quotepro.domain.usecase.reminder.CreateReminderUseCase
+import uk.ac.tees.mad.quotepro.domain.usecase.reminder.ScheduleReminderNotificationUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class QuoteDetailViewModel @Inject constructor(
     private val getQuoteByIdUseCase: GetQuoteByIdUseCase,
     private val updateQuoteStatusUseCase: UpdateQuoteStatusUseCase,
-    private val deleteQuoteUseCase: DeleteQuoteUseCase
+    private val deleteQuoteUseCase: DeleteQuoteUseCase,
+    private val createReminderUseCase: CreateReminderUseCase, // Injected
+    private val scheduleReminderUseCase: ScheduleReminderNotificationUseCase // Injected
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(QuoteDetailState())
@@ -37,6 +42,11 @@ class QuoteDetailViewModel @Inject constructor(
             is QuoteDetailEvent.DeleteQuote -> showDeleteDialog()
             is QuoteDetailEvent.ConfirmDelete -> confirmDelete()
             is QuoteDetailEvent.CancelDelete -> hideDeleteDialog()
+
+            // New Events
+            is QuoteDetailEvent.OpenReminderDialog -> _state.update { it.copy(showReminderDialog = true) }
+            is QuoteDetailEvent.DismissReminderDialog -> _state.update { it.copy(showReminderDialog = false) }
+            is QuoteDetailEvent.SetReminder -> createReminder(event.type, event.customDate)
         }
     }
 
@@ -79,12 +89,10 @@ class QuoteDetailViewModel @Inject constructor(
     private fun updateStatus(newStatus: QuoteStatus) {
         viewModelScope.launch {
             val currentQuote = _state.value.quote ?: return@launch
-
             val updatedQuote = currentQuote.copy(
                 status = newStatus,
                 updatedAt = System.currentTimeMillis()
             )
-
             updateQuoteStatusUseCase(updatedQuote)
                 .onSuccess {
                     _state.update { it.copy(quote = updatedQuote) }
@@ -93,6 +101,27 @@ class QuoteDetailViewModel @Inject constructor(
                 .onFailure { exception ->
                     _effect.emit(QuoteDetailEffect.ShowError(exception.message ?: "Failed to update status"))
                 }
+        }
+    }
+
+    private fun createReminder(type: ReminderType, customDate: Long?) {
+        val quote = _state.value.quote ?: return
+        viewModelScope.launch {
+            createReminderUseCase(
+                quoteId = quote.id,
+                clientName = quote.client.name,
+                dueDate = quote.dueDate,
+                type = type,
+                customDate = customDate
+            ).onSuccess { reminder ->
+                // Schedule local notification immediately
+                scheduleReminderUseCase(reminder)
+
+                _state.update { it.copy(showReminderDialog = false) }
+                _effect.emit(QuoteDetailEffect.ShowToast("Reminder set successfully"))
+            }.onFailure { e ->
+                _effect.emit(QuoteDetailEffect.ShowError(e.message ?: "Failed to set reminder"))
+            }
         }
     }
 
@@ -129,12 +158,14 @@ class QuoteDetailViewModel @Inject constructor(
     }
 }
 
-// Contract classes
+// --- Contract Classes ---
+
 data class QuoteDetailState(
     val quote: Quote? = null,
     val isLoading: Boolean = false,
     val error: String? = null,
-    val showDeleteDialog: Boolean = false
+    val showDeleteDialog: Boolean = false,
+    val showReminderDialog: Boolean = false // Added
 )
 
 sealed class QuoteDetailEvent {
@@ -144,6 +175,11 @@ sealed class QuoteDetailEvent {
     object DeleteQuote : QuoteDetailEvent()
     object ConfirmDelete : QuoteDetailEvent()
     object CancelDelete : QuoteDetailEvent()
+
+    // New Events for Reminder
+    object OpenReminderDialog : QuoteDetailEvent()
+    object DismissReminderDialog : QuoteDetailEvent()
+    data class SetReminder(val type: ReminderType, val customDate: Long?) : QuoteDetailEvent()
 }
 
 sealed class QuoteDetailNavAction {

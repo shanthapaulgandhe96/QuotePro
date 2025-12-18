@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import uk.ac.tees.mad.quotepro.presentation.navigation.EditQuoteRoute
 import uk.ac.tees.mad.quotepro.presentation.screens.quotedetail.components.QuoteActionsBar
 import uk.ac.tees.mad.quotepro.presentation.screens.quotedetail.components.QuoteInfoCard
+import uk.ac.tees.mad.quotepro.presentation.screens.reminder.components.AddReminderDialog
 import uk.ac.tees.mad.quotepro.utils.showToast
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -130,10 +131,23 @@ fun QuoteDetailScreen(
                         onDeleteClick = {
                             viewModel.onEvent(QuoteDetailEvent.DeleteQuote)
                         },
+                        onSetReminderClick = { // Wire up the event
+                            viewModel.onEvent(QuoteDetailEvent.OpenReminderDialog)
+                        },
                         modifier = Modifier.padding(16.dp)
                     )
                 }
             }
+        }
+
+        // Reminder Dialog
+        if (state.showReminderDialog) {
+            AddReminderDialog(
+                onDismiss = { viewModel.onEvent(QuoteDetailEvent.DismissReminderDialog) },
+                onConfirm = { type, customDate ->
+                    viewModel.onEvent(QuoteDetailEvent.SetReminder(type, customDate))
+                }
+            )
         }
 
         // Delete Confirmation Dialog

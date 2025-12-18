@@ -5,161 +5,191 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddAlert
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import uk.ac.tees.mad.quotepro.domain.model.Reminder
+import uk.ac.tees.mad.quotepro.presentation.navigation.QuoteDetailRoute
+import uk.ac.tees.mad.quotepro.presentation.screens.reminder.components.AddReminderDialog
+import uk.ac.tees.mad.quotepro.presentation.screens.reminder.components.QuoteSelectionDialog
+import uk.ac.tees.mad.quotepro.presentation.screens.reminder.components.ReminderStatusChip
+import uk.ac.tees.mad.quotepro.utils.showToast
+import java.text.SimpleDateFormat
+import java.util.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReminderScreen(
     navController: NavController,
     viewModel: ReminderViewModel = hiltViewModel()
 ) {
-    val reminders = viewModel.reminders
-    var search by remember { mutableStateOf("") }
+    val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
 
-    Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { /* Navigate to add reminder */ },
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AddAlert,
-                    contentDescription = "Add Reminder",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is ReminderUiEffect.ShowToast -> context.showToast(effect.message)
+                is ReminderUiEffect.NavigateToQuote -> {
+                    navController.navigate(QuoteDetailRoute(effect.quoteId))
+                }
             }
         }
-    ) { paddingValues ->
+    }
 
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Reminders") },
+                actions = {
+                    IconButton(onClick = { viewModel.onEvent(ReminderUiEvent.Refresh) }) {
+                        Icon(Icons.Default.Refresh, "Refresh")
+                    }
+                }
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { viewModel.onEvent(ReminderUiEvent.AddReminderClicked) },
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add Reminder")
+            }
+        }
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(padding)
                 .padding(horizontal = 16.dp)
         ) {
-
-            Text(
-                text = "Invoice Reminders",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
             OutlinedTextField(
-                value = search,
-                onValueChange = {
-                    search = it
-                    viewModel.onSearch(it)
-                },
+                value = state.searchQuery,
+                onValueChange = { viewModel.onEvent(ReminderUiEvent.SearchQueryChanged(it)) },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Search reminder…") },
-                leadingIcon = {
-                    Icon(Icons.Default.Search, contentDescription = null)
-                }
+                placeholder = { Text("Search client...") },
+                leadingIcon = { Icon(Icons.Default.Search, null) },
+                singleLine = true
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
 
-            if (reminders.isEmpty()) {
+            if (state.isLoading) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else if (state.filteredReminders.isEmpty()) {
                 EmptyReminderState()
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    items(reminders) { reminder ->
+                    items(state.filteredReminders) { reminder ->
                         ReminderCard(
                             reminder = reminder,
-                            onClick = {
-                                // navController.navigate("editReminder/${reminder.id}")
-                            }
+                            onClick = { viewModel.onEvent(ReminderUiEvent.ReminderClicked(reminder)) },
+                            onDelete = { viewModel.onEvent(ReminderUiEvent.DeleteReminderClicked(reminder)) }
                         )
                     }
                 }
             }
         }
-    }
-}
 
-@Composable
-private fun EmptyReminderState() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            Icons.Default.Warning,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(80.dp)
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        Text(
-            "No reminders yet!",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        if (state.showQuoteSelectionDialog) {
+            QuoteSelectionDialog(
+                quotes = state.availableQuotes,
+                onDismiss = { viewModel.onEvent(ReminderUiEvent.DismissDialogs) },
+                onQuoteSelected = { quote ->
+                    viewModel.onEvent(ReminderUiEvent.QuoteSelectedForReminder(quote))
+                }
+            )
+        }
+
+        if (state.showAddDialog) {
+            AddReminderDialog(
+                onDismiss = { viewModel.onEvent(ReminderUiEvent.DismissDialogs) },
+                onConfirm = { type, date ->
+                    viewModel.onEvent(
+                        ReminderUiEvent.CreateReminder(
+                            quoteId = state.quoteIdForReminder,
+                            clientName = state.clientNameForReminder,
+                            dueDate = state.quoteDueDateForReminder,
+                            type = type,
+                            customDate = date
+                        )
+                    )
+                }
+            )
+        }
+
+        if (state.showDeleteDialog && state.selectedReminder != null) {
+            AlertDialog(
+                onDismissRequest = { viewModel.onEvent(ReminderUiEvent.DismissDialogs) },
+                title = { Text("Delete Reminder?") },
+                text = { Text("This will cancel the scheduled notification.") },
+                confirmButton = {
+                    Button(
+                        onClick = { viewModel.onEvent(ReminderUiEvent.ConfirmDelete) },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                    ) {
+                        Text("Delete")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { viewModel.onEvent(ReminderUiEvent.DismissDialogs) }) { Text("Cancel") }
+                }
+            )
+        }
     }
 }
 
 @Composable
 fun ReminderCard(
-    reminder: ReminderUiModel,
-    onClick: () -> Unit
+    reminder: Reminder,
+    onClick: () -> Unit,
+    onDelete: () -> Unit
 ) {
-    Surface(
+    val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
-        shape = MaterialTheme.shapes.medium,
-        tonalElevation = 5.dp
+            .clickable(onClick = onClick),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
-            modifier = Modifier
-                .padding(16.dp),
+            modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                Icons.Default.Notifications,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(32.dp)
-            )
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(reminder.clientName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Text(
-                    text = reminder.clientName,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
+                    "Remind on: ${sdf.format(Date(reminder.reminderDate))}",
+                    style = MaterialTheme.typography.bodySmall
                 )
-                Text(
-                    text = "Due: ${reminder.dueDate}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error
-                )
+                Spacer(Modifier.height(4.dp))
+                ReminderStatusChip(status = reminder.status)
+            }
+            IconButton(onClick = onDelete) {
+                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
             }
         }
     }
 }
 
-
-@Preview
 @Composable
-fun showReminder(){
-    ReminderScreen(navController = NavController(LocalContext.current))
+fun EmptyReminderState() {
+    Column(
+        Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(Icons.Default.NotificationsOff, null, Modifier.size(64.dp), tint = MaterialTheme.colorScheme.outline)
+        Spacer(Modifier.height(16.dp))
+        Text("No reminders found", style = MaterialTheme.typography.bodyLarge)
+    }
 }

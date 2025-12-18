@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.NotificationsActive // Added Icon
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,10 +21,10 @@ fun QuoteActionsBar(
     onEditClick: () -> Unit,
     onStatusChange: (QuoteStatus) -> Unit,
     onDeleteClick: () -> Unit,
+    onSetReminderClick: () -> Unit, // New Callback
     modifier: Modifier = Modifier
 ) {
     var showStatusMenu by remember { mutableStateOf(false) }
-    var showMoreMenu by remember { mutableStateOf(false) }
 
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -41,7 +42,7 @@ fun QuoteActionsBar(
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Edit Button
+            // 1. Edit Button
             Button(
                 onClick = onEditClick,
                 modifier = Modifier.fillMaxWidth()
@@ -57,7 +58,23 @@ fun QuoteActionsBar(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Change Status Button
+            // 2. Set Reminder Button (New)
+            OutlinedButton(
+                onClick = onSetReminderClick,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    imageVector = Icons.Default.NotificationsActive,
+                    contentDescription = "Remind",
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Set Reminder")
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // 3. Change Status Button
             Box(modifier = Modifier.fillMaxWidth()) {
                 OutlinedButton(
                     onClick = { showStatusMenu = true },
@@ -106,7 +123,7 @@ fun QuoteActionsBar(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Delete Button
+            // 4. Delete Button
             OutlinedButton(
                 onClick = onDeleteClick,
                 modifier = Modifier.fillMaxWidth(),

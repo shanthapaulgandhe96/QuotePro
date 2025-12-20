@@ -2,9 +2,9 @@ package uk.ac.tees.mad.quotepro.utils
 
 object CloudinaryConfig {
     // Your Cloudinary credentials
-    const val CLOUD_NAME = "ddr0ojyzf"
-    const val API_KEY = "985663646288312"
-    const val API_SECRET = "dfJVbXR9jBoYyVtswAveuj2fKvA"
+    const val CLOUD_NAME = "djwitf1vv"
+    const val API_KEY = "153284547572489"
+    const val API_SECRET = "NcN4oJgE33ZXSRyO_jWrp6cLXnY"
 
     // IMPORTANT: Upload preset for unsigned uploads
     // Make sure this matches the preset name in your Cloudinary dashboard

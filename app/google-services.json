@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "331693540272",
-    "project_id": "quotepro-cee21",
-    "storage_bucket": "quotepro-cee21.firebasestorage.app"
+    "project_number": "230123651340",
+    "project_id": "quotepro-6440b",
+    "storage_bucket": "quotepro-6440b.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:331693540272:android:beddf2c81fd6269862cc75",
+        "mobilesdk_app_id": "1:230123651340:android:9341901f7ae3e8e8390929",
         "android_client_info": {
           "package_name": "uk.ac.tees.mad.quotepro"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBd_TCYzR41whaWT4nSSFtdP--f_F1B7Ck"
+          "current_key": "AIzaSyCmhesJvlIxWD34PTcDc_uOCYy3YKbd_C8"
         }
       ],
       "services": {
